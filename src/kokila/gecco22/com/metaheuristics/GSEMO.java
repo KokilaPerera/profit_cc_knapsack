@@ -117,13 +117,8 @@ public abstract class GSEMO extends Algorithm {
 
         Solution finalSolution = population.get(0);
 
-        System.out.println("Final profit: (max) "+ finalSolution.getObjective(Knapsack.OBJECTIVE_P));
-        System.out.println("Final weight: "+ finalSolution.getObjective(Knapsack.OBJECTIVE_W));
+        log(finalSolution);
 
-        int counter = (int) finalSolution.getObjective(Knapsack.OBJECTIVE_C);
-        int weight = (int) finalSolution.getObjective(Knapsack.OBJECTIVE_W);
-        double V = ((Knapsack)this.problem_).getCCViolation(counter, weight) ;
-        System.out.println("CC Violation (chebyshev): " + V);
 
         return population ;
     }// execute
@@ -136,4 +131,12 @@ public abstract class GSEMO extends Algorithm {
     {
         return;
     }
+
+    protected void log(Solution solution)
+    {
+        System.out.println("Final profit: (max) "+ solution.getObjective(Knapsack.OBJECTIVE_P));
+        System.out.println("Final weight: "+ solution.getObjective(Knapsack.OBJECTIVE_W));
+    }
+
+
 } // OnePlusOne

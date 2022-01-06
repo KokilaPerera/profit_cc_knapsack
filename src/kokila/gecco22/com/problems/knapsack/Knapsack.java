@@ -194,6 +194,11 @@ public class Knapsack extends Problem {
     public void setDelta_(double delta_) {
         this.delta_ = delta_;
     }
+
+    public double getDelta_() {
+        return this.delta_;
+    }
+
     public void setWeightBound_(int weightBound_) {
         this.weightBound_ = weightBound_;
     }
