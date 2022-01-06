@@ -66,9 +66,11 @@ public class MainUITest extends JFrame {
         };
 
         try {
-            MuVarGSEMO_main.run(listener);
-        } catch (JMException | ClassNotFoundException ex) {
-            ex.printStackTrace();
+            MuVarGSEMO_main.run();
+        } catch (JMException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

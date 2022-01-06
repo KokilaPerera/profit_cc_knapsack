@@ -59,7 +59,7 @@ public class Knapsack extends Problem {
             e.printStackTrace();
         }
 
-        System.out.println(" capacity = " +weightBound_ + " | var = " + delta_ + " | alpha = " + alpha_);
+
 
         length_ = new int[numberOfVariables_];
         length_[0] = numberOfItems_;
@@ -105,7 +105,7 @@ public class Knapsack extends Problem {
     } // evaluate
 
     // calculate the chance of constraint violation using Chebyshev method
-    protected double chebyshevProbability(int count, int value, int constraint, double alpha, double delta)
+    double chebyshevProbability(int count, int value, int constraint, double alpha, double delta)
     {
         //TODO implement chernoff bound later
         double temp1 = delta * delta * count;
@@ -113,6 +113,20 @@ public class Knapsack extends Problem {
         temp2 = 3 * temp2 * temp2;
         double chance = temp1 / (temp1 + temp2);
         chance -= alpha;
+        if (  chance > 0 ) {
+            return BigDecimal.valueOf(chance).setScale(8, RoundingMode.HALF_EVEN).doubleValue();
+        }
+        return 0;
+    }
+
+    public double getCCViolation(int count, int weight)
+    {
+        //TODO implement chernoff bound later
+        double temp1 = delta_ * delta_ * count;
+        double temp2 = weightBound_ - weight;
+        temp2 = 3 * temp2 * temp2;
+        double chance = temp1 / (temp1 + temp2);
+        //chance -= this.alpha_;
         if (  chance > 0 ) {
             return BigDecimal.valueOf(chance).setScale(8, RoundingMode.HALF_EVEN).doubleValue();
         }
@@ -175,5 +189,18 @@ public class Knapsack extends Problem {
             System.exit(1);
         } // catch
     } // readProblem
+
+
+    public void setDelta_(double delta_) {
+        this.delta_ = delta_;
+    }
+    public void setWeightBound_(int weightBound_) {
+        this.weightBound_ = weightBound_;
+    }
+
+    public String toString()
+    {
+        return "Knapsack instance: capacity = " +weightBound_ + " | var = " + delta_ + " | alpha = " + alpha_;
+    }
 
 } // OnePlusOne

@@ -111,12 +111,20 @@ public abstract class GSEMO extends Algorithm {
 
         System.out.println("Final population size: " + population.size());
 
-        System.out.println("Final profit: "+ population.get(0).getObjective(Knapsack.OBJECTIVE_P));
-        System.out.println("Final weight: "+ population.get(0).getObjective(Knapsack.OBJECTIVE_W));
+        //System.out.println("Final profit: "+ population.get(0).getObjective(Knapsack.OBJECTIVE_P));
+        //System.out.println("Final weight: "+ population.get(0).getObjective(Knapsack.OBJECTIVE_W));
         population.sort(new ObjectiveComparator(Knapsack.OBJECTIVE_P,true));
 
-        System.out.println("Final profit2: "+ population.get(0).getObjective(Knapsack.OBJECTIVE_P));
-        System.out.println("Final weight2: "+ population.get(0).getObjective(Knapsack.OBJECTIVE_W));
+        Solution finalSolution = population.get(0);
+
+        System.out.println("Final profit: (max) "+ finalSolution.getObjective(Knapsack.OBJECTIVE_P));
+        System.out.println("Final weight: "+ finalSolution.getObjective(Knapsack.OBJECTIVE_W));
+
+        int counter = (int) finalSolution.getObjective(Knapsack.OBJECTIVE_C);
+        int weight = (int) finalSolution.getObjective(Knapsack.OBJECTIVE_W);
+        double V = ((Knapsack)this.problem_).getCCViolation(counter, weight) ;
+        System.out.println("CC Violation (chebyshev): " + V);
+
         return population ;
     }// execute
 

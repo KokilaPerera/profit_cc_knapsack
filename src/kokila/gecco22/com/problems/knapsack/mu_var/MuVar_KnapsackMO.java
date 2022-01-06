@@ -30,7 +30,7 @@ public class MuVar_KnapsackMO extends Knapsack {
         int profit = 0;
         int weight = 0;
 
-        double var = delta_ * delta_ / 12.0;
+        double var = delta_ * delta_ / 12.0;//TODO recheck
 
         //for knapsack problem, the binary variable will indicate
         // whether a particular item is selected into the solution or  not

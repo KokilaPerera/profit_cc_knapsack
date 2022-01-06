@@ -16,10 +16,11 @@ import java.util.HashMap;
  * Problem is the chance-constrained knapsack problem
  **/
 public class MuVarGSEMO_main {
+    private static Algorithm algorithm ;
 
-    public static void run(PlotListener plotListener) throws JMException, ClassNotFoundException {
+    public static void init(int delta, int capacity, PlotListener plotListener) throws JMException {
         MuVar_KnapsackMO problem   ;         // The problem to solve
-        Algorithm algorithm ;         // The algorithm to use
+                 // The algorithm to use
         Operator  mutation  ;         // Mutation operator\
         Operator  selection  ;         // Mutation operator\
 
@@ -29,6 +30,8 @@ public class MuVarGSEMO_main {
 
         // number of bits = length of problem
         problem = new MuVar_KnapsackMO("Binary", "Knapsack_01.ttp");
+        problem.setDelta_(delta);
+        problem.setWeightBound_(capacity);
 
         algorithm = new MuVarGSEMO(problem) {
             @Override
@@ -67,6 +70,16 @@ public class MuVarGSEMO_main {
         algorithm.addOperator("mutation",mutation);
         algorithm.addOperator("selection", selection);
 
+
+    } //init
+
+    public static void run() throws JMException, ClassNotFoundException {
+        if(algorithm == null)
+        {
+            System.out.println("Initialize the algorithm first ... ");
+            return;
+        }
+
         /* Execute the Algorithm */
         long initTime = System.currentTimeMillis();
         SolutionSet population = algorithm.execute();
@@ -74,9 +87,15 @@ public class MuVarGSEMO_main {
         System.out.println("Total execution time: " + estimatedTime);
 
         /* Log messages */
-        System.out.println("Objectives values have been written to file FUN");
+        //System.out.println("Objectives values have been written to file FUN");
         population.printObjectivesToFile("FUN");
-        System.out.println("Variables values have been written to file VAR");
+        //System.out.println("Variables values have been written to file VAR");
         population.printVariablesToFile("VAR");
-    } //main
+        System.out.println("**** end of execution ****");
+    }
+
+
+    public static void printProblem() {
+        System.out.println( algorithm.getProblem().toString() );
+    }
 } // OnePlusOne_main

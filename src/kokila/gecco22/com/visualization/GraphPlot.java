@@ -37,18 +37,14 @@ public class GraphPlot extends JPanel{
         double x = (double)(width-2*marg)/getMaxX();
         double scale = (double)(height-2*marg)/getMaxY();
 
-        // draw grid
-        graph.setPaint(Color.GRAY);
-        for (double xLabel = width - marg - 900; xLabel > marg ; xLabel -= 900)
-            graph.draw(new Line2D.Double(xLabel, marg , xLabel, height - marg));
-
-        for (double yLabel = height - marg - 800; yLabel > marg ; yLabel -= 800)
-            graph.draw(new Line2D.Double(marg, yLabel, width - marg, yLabel));
-
         // draw graph
         graph.setPaint(Color.BLUE);
         graph.draw(new Line2D.Double(marg, marg, marg, height-marg));
         graph.draw(new Line2D.Double(marg, height-marg, width-marg, height-marg));
+
+        graph.drawString(getMaxX()+"", width - marg - 10, height-marg + 10);
+        graph.drawString(getMaxY()+"", marg -50, marg +15 );
+        graph.drawString("0,0", marg -20, height - marg +10 );
         graph.drawString(labelX, width - marg, height-marg );
         graph.drawString(labelY, marg , marg);
         graph.setPaint(Color.RED);
@@ -79,6 +75,6 @@ public class GraphPlot extends JPanel{
                 max = x;
         }
         System.out.print(max+",");*/
-        return      7000;
+        return 6000;
     }
 }  

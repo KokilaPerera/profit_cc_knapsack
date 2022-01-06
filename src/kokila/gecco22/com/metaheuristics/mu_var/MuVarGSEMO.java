@@ -35,10 +35,8 @@ public abstract class MuVarGSEMO extends GSEMO {
             y[i] = s.getObjective(objectiveY);
         }
 
-        for (PlotListener listener : listenerList)
-        {
-            listener.plot(iteration,labelX, x,labelY, y);
-        }
+        listenerList.forEach(listener -> listener.plot(iteration, labelX, x, labelY, y));
+
     }
 
     protected void addListener(PlotListener listener)
