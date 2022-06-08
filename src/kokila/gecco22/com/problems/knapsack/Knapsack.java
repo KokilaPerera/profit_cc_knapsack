@@ -5,7 +5,6 @@ import jmetal.core.Solution;
 import jmetal.encodings.solutionType.BinarySolutionType;
 import jmetal.encodings.variable.Binary;
 
-import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -15,12 +14,13 @@ import java.math.RoundingMode;
  */
 public class Knapsack extends Problem {
 
-    public static final int OBJECTIVE_P = 0;
-    public static final int OBJECTIVE_W = 1;
-    public static final int OBJECTIVE_C = 2;
-    protected double delta_ = 50;
+    public static final int OBJ_P = 0;
+    public static final int OBJ_W = 1;
+    public static final int OBJ_C = 2;
+    protected double delta_ = 50.0;
     protected double alpha_ = 0.1;
 
+    protected double v;
 
     /**
      * Stores the number of variables of the problem
@@ -42,36 +42,33 @@ public class Knapsack extends Problem {
      */
     protected int[] weight ;
 
-    /**
-     * Creates a new Knapsack problem instance
-     * @param file_data Path of the problem data
-     */
-    public Knapsack(String solutionType, String file_data) {
-        this.numberOfVariables_  = 1;
-        numberOfObjectives_ = 5;
-        numberOfConstraints_= 1;
-        problemName_ = "Knapsack";
+    public Knapsack(int numberOfItems_, int weightBound_, int[] profit, int[] weight) {
+        init(numberOfItems_, weightBound_, profit, weight);
+    }
 
-        solutionType_ = new BinarySolutionType(this) ;
-        try {
-            readProblem(file_data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void init(int numberOfItems, int weightBound, int[] profit, int[] weight) {
+        this.weightBound_ = weightBound;
+        this.numberOfItems_ = numberOfItems;
+        this.length_[0] = numberOfItems;
+        this.profit = profit;
+        this.weight = weight;
+    }
 
-
-
+    public Knapsack() {
+        numberOfVariables_  = 1;
         length_ = new int[numberOfVariables_];
         length_[0] = numberOfItems_;
+        numberOfObjectives_ = 5;
+        numberOfConstraints_= 1;
+        solutionType_ = new BinarySolutionType(this) ;
+    }
 
-        if (solutionType.compareTo("Binary") == 0)
-            solutionType_ = new BinarySolutionType(this) ;
-        else {
-            System.out.println("Knapsack Problems: solution type " + solutionType + " invalid") ;
-            System.exit(-1) ;
-        }
+    public Knapsack(String problemName) {
+        this();
+        this.problemName_ = problemName;
+    }
 
-    } // OneMax
+
 
     /**
      * Evaluates a solution
@@ -82,9 +79,9 @@ public class Knapsack extends Problem {
         int counter;
         int profit;
         int weight;
-
+        //KnapsackSolution sol = (KnapsackSolution) solution;
         //for knapsack problem, the binary variable will indicate
-        // whether a particular item is selected into the solution or  not
+        // whether a particular item is selected into the sol or  not
         variable = ((Binary) solution.getDecisionVariables()[0]);
 
         counter = 0;
@@ -98,11 +95,11 @@ public class Knapsack extends Problem {
                 weight += this.weight[i];
             }
         }
-        solution.setObjective(OBJECTIVE_C, counter);
-        solution.setObjective(OBJECTIVE_W, weight);
-        solution.setObjective(OBJECTIVE_P, profit);
+        solution.setObjective(OBJ_C, counter);
+        solution.setObjective(OBJ_W, weight);
+        solution.setObjective(OBJ_P, profit);
 
-    } // evaluate
+    }
 
     // calculate the chance of constraint violation using Chebyshev method
     double chebyshevProbability(int count, int value, int constraint, double alpha, double delta)
@@ -133,79 +130,50 @@ public class Knapsack extends Problem {
         return 0;
     }
 
-    public void readProblem(String file) throws
-            IOException {
-
-        Reader inputFile = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-
-        StreamTokenizer token = new StreamTokenizer(inputFile);
-        try {
-            boolean found = false ;
-
-            token.nextToken();
-            while(!found) {
-                if ((token.sval != null) && ((token.sval.compareTo("NUMBER") == 0)))
-                    found = true ;
-                else
-                    token.nextToken() ;
-            } // while
-
-            token.nextToken() ;
-            token.nextToken() ;
-            token.nextToken();
-            token.nextToken();
-            numberOfItems_ =  (int)token.nval ;
-            found = false ;
-            token.nextToken();
-            while(!found) {
-                if ((token.sval != null) &&
-                        ((token.sval.compareTo("CAPACITY") == 0)))
-                    found = true ;
-                else
-                    token.nextToken() ;
-            } // while
-
-            token.nextToken() ;
-            token.nextToken() ;
-            token.nextToken() ;
-            token.nextToken() ;
-            weightBound_ =  (int)token.nval ;
-            token.nextToken() ;
-            token.nextToken() ;
-            weight = new int[numberOfItems_];
-            profit = new int[numberOfItems_];
-
-            for (int i = 0 ; i < numberOfItems_ ; i++){
-                token.nextToken();
-                profit[i] = (int) token.nval;
-                token.nextToken();
-                weight[i] = (int) token.nval + 100;
-            }
-
-        } // try
-        catch (Exception e) {
-            System.err.println ("Knapsack.readProblem(): error when reading data file "+e);
-            e.printStackTrace();
-            System.exit(1);
-        } // catch
-    } // readProblem
-
-
-    public void setDelta_(double delta_) {
+    public void setDelta(double delta_) {
         this.delta_ = delta_;
+        getV(); // to initialize v to this value
     }
 
-    public double getDelta_() {
+
+    public void setAlpha(double alpha_) {
+        this.alpha_ = alpha_;
+        getV(); // to initialize v to this value
+    }
+
+    public double getV()
+    {
+        if (v == 0.0)
+            v = delta_ * delta_ / 3.0;
+        return v;
+    }
+
+    public double getDelta() {
         return this.delta_;
     }
 
-    public void setWeightBound_(int weightBound_) {
+    public int[] getProfit()
+    {
+        return profit;
+    }
+
+    public int[] getWeight()
+    {
+        return weight;
+    }
+
+    public int getWeightBound()
+    {
+        return this.weightBound_;
+    }
+
+    public void setWeightBound(int weightBound_) {
         this.weightBound_ = weightBound_;
     }
 
     public String toString()
     {
-        return "Knapsack instance: capacity = " +weightBound_ + " | var = " + delta_ + " | alpha = " + alpha_;
+        return "Knapsack instance: capacity = " +weightBound_ + " | delta = " + delta_ + " | alpha = " + alpha_;
     }
 
 } // OnePlusOne

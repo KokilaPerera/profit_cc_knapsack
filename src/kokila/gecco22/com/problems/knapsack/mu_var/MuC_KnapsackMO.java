@@ -7,9 +7,9 @@ import kokila.gecco22.com.problems.knapsack.Knapsack;
 /**
  * Class representing problem DynProfit_Knapsack
  */
-public class MuVar_KnapsackMO extends Knapsack {
+public class MuC_KnapsackMO extends Knapsack {
     public static final int MU = 0;
-    public static final int VAR = 1;
+    public static final int Csqrt = 1;
 
     private double vMax;
 
@@ -17,7 +17,7 @@ public class MuVar_KnapsackMO extends Knapsack {
      * Creates a new Knapsack problem instance
      * @param problemName Name of the problem instance
      */
-    public MuVar_KnapsackMO(String problemName) {
+    public MuC_KnapsackMO(String problemName) {
         super(problemName);
         numberOfObjectives_ = 2;
 
@@ -61,7 +61,7 @@ public class MuVar_KnapsackMO extends Knapsack {
             var = counter;//getV() * counter;
         }
         solution.setObjective(MU, mu);
-        solution.setObjective(VAR, Math.sqrt(var));
+        solution.setObjective(Csqrt, Math.sqrt(var));
     }
 
     public String toString()

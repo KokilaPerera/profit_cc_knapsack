@@ -26,11 +26,11 @@ public class OnePlusOne_main {
 
 
         // number of bits = length of problem
-        problem = new DynW_KnapsackMO("Binary", "Knapsack_02.ttp");
+        problem = new DynW_KnapsackMO();
 
         ObjectiveComparator comparator_U = new ObjectiveComparator(DynW_KnapsackSO.OBJECTIVE_U);
         ObjectiveComparator comparator_V = new ObjectiveComparator(DynW_KnapsackSO.OBJECTIVE_V);
-        ObjectiveComparator comparator_P = new ObjectiveComparator(Knapsack.OBJECTIVE_P);
+        ObjectiveComparator comparator_P = new ObjectiveComparator(Knapsack.OBJ_P);
         algorithm = new OnePlusOne(problem) {
             @Override
             public boolean fitnessComparison(SolutionSet population, Solution parent, Solution offspring) {

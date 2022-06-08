@@ -65,17 +65,11 @@ public abstract class OnePlusOne extends Algorithm {
             problem_.evaluate(offspring);
             evaluations ++;
 
-            if( fitnessComparison(population, parent, offspring)) {
-                /*System.out.println(evaluations + ">>>" + offspring.getObjective(0)
-                        + " | " + offspring.getObjective(1)
-                        + " | " + offspring.getObjective(2)
-                        + " | " + offspring.getObjective(3)
-                        + " | " + offspring.getObjective(4));*/
-            }
+            fitnessComparison(population, parent, offspring);
         } // while
 
         // Return a population with the best individual
-        System.out.println("Final profit: "+ population.get(0).getObjective(Knapsack.OBJECTIVE_P));
+        System.out.println("Final profit: "+ population.get(0).getObjective(Knapsack.OBJ_P));
         return population ;
     } // execute
     public abstract boolean fitnessComparison(SolutionSet population, Solution parent, Solution offspring);
