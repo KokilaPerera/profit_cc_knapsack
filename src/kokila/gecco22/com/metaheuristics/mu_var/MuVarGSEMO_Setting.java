@@ -8,9 +8,9 @@ import jmetal.operators.mutation.MutationFactory;
 import jmetal.util.JMException;
 import jmetal.util.comparators.ObjectiveComparator;
 import kokila.gecco22.com.metaheuristics.ExperimentSetting;
+import kokila.gecco22.com.metaheuristics.GSEMO;
 import kokila.gecco22.com.problems.knapsack.Knapsack;
 import kokila.gecco22.com.problems.knapsack.mu_var.MuVar_KnapsackMO;
-
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -29,9 +29,10 @@ MuVarGSEMO_Setting extends ExperimentSetting {
         problem = new MuVar_KnapsackMO( prob.getName());
         problem.init(prob.getLength(0), prob.getWeightBound(), prob.getProfit(), prob.getWeight());
         problem.setDelta(delta);
+        prob.setAlpha(prob.getAlpha());
         this.delta = delta;
 
-        algorithm = new MuVarGSEMO(problem) {
+        algorithm = new GSEMO(problem) {
             @Override
             public boolean weaklyDominates(Solution first, Solution second) {
                 double firstMean = first.getObjective(MuVar_KnapsackMO.MU);
@@ -39,20 +40,17 @@ MuVarGSEMO_Setting extends ExperimentSetting {
                 double firstVar = first.getObjective(MuVar_KnapsackMO.VAR);
                 double secondVar = second.getObjective(MuVar_KnapsackMO.VAR);
 
-                return firstMean >= secondMean && firstVar <= secondVar;
+                return  (firstVar <= secondVar && firstMean >= secondMean) ;
             }
 
             @Override
             public boolean stronglyDominates(Solution first, Solution second) {
+                double firstMean = first.getObjective(MuVar_KnapsackMO.MU);
+                double secondMean = second.getObjective(MuVar_KnapsackMO.MU);
+                double firstVar = first.getObjective(MuVar_KnapsackMO.VAR);
+                double secondVar = second.getObjective(MuVar_KnapsackMO.VAR);
 
-                /*double firstMean = first.getObjective(MuVar_KnapsackMO.OBJECTIVE_MU);
-                double secondMean = second.getObjective(MuVar_KnapsackMO.OBJECTIVE_MU);
-                double firstVar = first.getObjective(MuVar_KnapsackMO.OBJECTIVE_VAR);
-                double secondVar = second.getObjective(MuVar_KnapsackMO.OBJECTIVE_VAR);
-
-                return (firstMean >= secondMean && firstVar <= secondVar) &&
-                        (firstMean > secondMean || firstVar < secondVar);*/
-                return weaklyDominates(first, second);
+                return (firstMean >= secondMean && firstVar <= secondVar) && (firstMean > secondMean || firstVar < secondVar);
             }
 
             @Override
@@ -80,17 +78,18 @@ MuVarGSEMO_Setting extends ExperimentSetting {
         };
 
         parameters = new HashMap() ;
-        parameters.put("probability", 1.0/problem.getNumberOfBits()) ;
+        //parameters.put("probability", 1.0/problem.getNumberOfBits()) ;
+        parameters.put("probability", 0.05) ;
         mutation = MutationFactory.getMutationOperator("BitFlipMutation", parameters);
         /* Add the operators to the algorithm*/
         algorithm.addOperator("mutation",mutation);
         algorithm.setInputParameter("maxEvaluations", iterations);
-        algorithm.setInputParameter("populationSize", iterations);
+        algorithm.setInputParameter("populationSize", problem.getNumberOfBits()+1);
     } //init
 
     @Override
     protected void logResults(SolutionSet population){
-        double[] alphas = new double[]{0.1, 0.01, 0.001};;//{0.1, 0.01, 0.001};
+        double[] alphas = new double[]{0.1, 0.01, 0.001};
         double[] cheby = new double[3];
         double[] chern = new double[3];
         population.sort(new ObjectiveComparator(MuVar_KnapsackMO.MU, true));
@@ -99,7 +98,6 @@ MuVarGSEMO_Setting extends ExperimentSetting {
         //(Binary)(population.get(0).getDecisionVariables()[0]).get;
         for (Iterator<Solution> it = population.iterator(); it.hasNext(); ) {
             Solution solution = it.next();
-
             for(int i = 0; i<alphas.length;i++)
             {
 

@@ -1,8 +1,11 @@
 package kokila.gecco22.com.metaheuristics;
 
 import jmetal.core.*;
+import jmetal.encodings.variable.Binary;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
+import jmetal.util.comparators.ObjectiveComparator;
+import kokila.gecco22.com.problems.knapsack.mu_var.MuVar_KnapsackMO;
 
 import java.util.Iterator;
 
@@ -89,12 +92,6 @@ public abstract class GSEMO extends Algorithm {
                     Solution s = it.next();
                     population.add(s);
                 }
-                /*
-                if (evaluations % 1000 == 0)
-                {
-                    //plot(evaluations, population, "Variance", MuVar_KnapsackMO.OBJECTIVE_VAR, "Mu", MuVar_KnapsackMO.OBJECTIVE_MU);
-                }
-                 */
                 newPopulation.clear();
                 //population = sanitize(population);
             }

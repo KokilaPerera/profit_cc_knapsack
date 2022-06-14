@@ -5,8 +5,6 @@ import jmetal.core.SolutionSet;
 import jmetal.util.JMException;
 import kokila.gecco22.com.problems.knapsack.Knapsack;
 
-import java.util.Arrays;
-
 public abstract class ExperimentSetting {
     protected Algorithm algorithm;
     protected Knapsack problem;

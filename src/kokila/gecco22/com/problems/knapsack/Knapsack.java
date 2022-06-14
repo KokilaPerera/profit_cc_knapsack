@@ -152,6 +152,10 @@ public class Knapsack extends Problem {
         return this.delta_;
     }
 
+    public double getAlpha() {
+        return this.alpha_;
+    }
+
     public int[] getProfit()
     {
         return profit;

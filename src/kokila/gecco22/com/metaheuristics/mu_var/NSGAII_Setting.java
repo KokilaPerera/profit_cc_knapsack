@@ -37,7 +37,7 @@ public class NSGAII_Setting extends ExperimentSetting {
         problem.setDelta(delta);
 
         algorithm = new NSGAII(problem);
-        algorithm.setInputParameter("populationSize", 100);
+        algorithm.setInputParameter("populationSize", problem.getNumberOfBits());
         algorithm.setInputParameter("maxEvaluations", iterations);
 
         HashMap parameters = null;

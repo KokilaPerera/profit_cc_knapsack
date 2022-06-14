@@ -8,6 +8,7 @@ import jmetal.operators.mutation.MutationFactory;
 import jmetal.util.JMException;
 import jmetal.util.comparators.ObjectiveComparator;
 import kokila.gecco22.com.metaheuristics.ExperimentSetting;
+import kokila.gecco22.com.metaheuristics.GSEMO;
 import kokila.gecco22.com.problems.knapsack.Knapsack;
 import kokila.gecco22.com.problems.knapsack.mu_var.MuC_KnapsackMO;
 
@@ -31,7 +32,7 @@ MuCGSEMO_Setting extends ExperimentSetting {
         problem.setDelta(delta);
         this.delta = delta;
 
-        algorithm = new MuVarGSEMO(problem) {
+        algorithm = new GSEMO(problem) {
             @Override
             public boolean weaklyDominates(Solution first, Solution second) {
                 double firstMean = first.getObjective(MuC_KnapsackMO.MU);

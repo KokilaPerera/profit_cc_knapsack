@@ -53,15 +53,18 @@ public class MuVar_KnapsackMO extends Knapsack {
 
         if (weight > weightBound_) {
             mu = weightBound_ - weight;
-            //var = getVMax() + weight - weightBound_;
-            var = variable.getNumberOfBits() + weight - weightBound_;
+            var = getVMax() ;//+ weight - weightBound_;
+            //var = variable.getNumberOfBits() + weight - weightBound_;
         }
         else{
             mu = profit;
-            var = counter;//getV() * counter;
+            var = getV() * counter;
+            //var = Math.sqrt(var*(1-alpha_)/alpha_);
         }
+
         solution.setObjective(MU, mu);
-        solution.setObjective(VAR, Math.sqrt(var));
+        solution.setObjective(VAR, var);
+        //solution.setObjective(COUNTER, counter);
     }
 
     public String toString()

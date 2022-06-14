@@ -7,19 +7,21 @@ import kokila.gecco22.com.problems.knapsack.Knapsack;
 /**
  * Class representing problem DynProfit_Knapsack
  */
-public class MuVar_KnapsackMO2 extends Knapsack {
-    public static final int MINUS_MU = 0;
-    public static final int VAR = 1;
-    private double v;
+public class MuProb_KnapsackMO extends Knapsack {
+    public static final int PROFIT = 0;
+    public static final int WEIGHT_EXCESS = 1;
+    public static final int COUNTER = 2;
+
     private double vMax;
 
     /**
      * Creates a new Knapsack problem instance
      * @param problemName Name of the problem instance
      */
-    public MuVar_KnapsackMO2(String problemName) {
+    public MuProb_KnapsackMO(String problemName) {
         super(problemName);
-        numberOfObjectives_ = 2;
+        numberOfObjectives_ = 3;
+
     }
 
     private double getVMax()
@@ -34,40 +36,34 @@ public class MuVar_KnapsackMO2 extends Knapsack {
      */
     public void evaluate(Solution solution) {
 
-        Binary variable;
+        double alpha = this.alpha_;
+        //super.evaluate(solution);
         int counter;
-        int profit;
-        int weight;
-        double mu, var;
-        //KnapsackSolution sol = (KnapsackSolution) solution;
-        //for knapsack problem, the binary variable will indicate
-        // whether a particular item is selected into the sol or  not
-        variable = ((Binary) solution.getDecisionVariables()[0]);
-
-        counter = 0;
+        double profit, weight;
+        double mu, var, prob;
+        Binary variable = ((Binary) solution.getDecisionVariables()[0]);
+        counter = variable.bits_.cardinality();
         profit = 0;
         weight = 0;
 
         for (int i = 0; i < variable.getNumberOfBits(); i++){
             if (variable.bits_.get(i)) {
-                counter++;
                 profit += this.profit[i];
                 weight += this.weight[i];
             }
         }
 
+        mu = profit;
+        mu -= Math.sqrt( getV() * counter * (1-alpha/alpha));
         if (weight > weightBound_) {
-            mu = 0.0;//weight - weightBound_;
-            var = getVMax();//+ weight - weightBound_;
-            //var = variable.getNumberOfBits() + weight - weightBound_;
+            prob = weight - weightBound_;
         }
-        else{
-            mu = -profit;
-            var = getV() * counter;
-            //var = counter;
+        else{ // if weight is within the capacity bound
+            prob = 0;
         }
-        solution.setObjective(MINUS_MU, mu);
-        solution.setObjective(VAR, var);
+        solution.setObjective(PROFIT, mu);
+        solution.setObjective(WEIGHT_EXCESS, prob);
+        solution.setObjective(COUNTER, counter);
     }
 
     public String toString()

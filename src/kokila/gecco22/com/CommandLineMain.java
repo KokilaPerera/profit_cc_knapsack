@@ -3,7 +3,7 @@ package kokila.gecco22.com;
 import jmetal.core.SolutionSet;
 import jmetal.util.JMException;
 import kokila.gecco22.com.metaheuristics.GSEMO_Setting;
-import kokila.gecco22.com.metaheuristics.mu_var.MuCGSEMO_Setting;
+import kokila.gecco22.com.metaheuristics.OnePlusOne_MuVar_setting;
 import kokila.gecco22.com.metaheuristics.mu_var.MuVarGSEMO_Setting;
 import kokila.gecco22.com.metaheuristics.mu_var.NSGAII_Setting;
 import kokila.gecco22.com.problems.knapsack.Knapsack;
@@ -130,6 +130,9 @@ public class CommandLineMain {
             {
                 runGeneralGSEMO();
             }
+            else{
+                run1p1();
+            }
     }
 
     private void runGeneralGSEMO() {
@@ -196,6 +199,7 @@ public class CommandLineMain {
             for(int i=0; i<iterations;){
                 i++;
                 System.out.print(i+"\t");
+                this.problem.setAlpha(0.01);
 
                 //MuCGSEMO_Setting experimentSetting = new MuCGSEMO_Setting();
                 MuVarGSEMO_Setting experimentSetting = new MuVarGSEMO_Setting();
@@ -231,6 +235,35 @@ public class CommandLineMain {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+
+    private void run1p1() {
+
+        String filePath = getOutputFilePath();
+        printSettingParameters(filePath, "OnePlusOne");
+
+        new File(filePath).mkdirs();
+
+        try {
+            for(int i=0; i<iterations;){
+                i++;
+                System.out.print(i+"\t");
+
+                //MuProbGSEMO_Setting experimentSetting = new MuProbGSEMO_Setting();
+                OnePlusOne_MuVar_setting experimentSetting = new OnePlusOne_MuVar_setting();
+                experimentSetting.init(this.problem, delta, evaluations);
+                SolutionSet results = experimentSetting.run();
+
+                printAndVisualize(results, filePath, i);
+            }
+            //System.out.println("**** end of execution ****");
+
+        } catch (JMException|ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 
     private String getOutputFilePath() {
